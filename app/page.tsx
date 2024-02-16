@@ -1,15 +1,17 @@
 import Image from "next/image";
-import { CodeEditor } from "./Components";
+import { CodeEditor, Navbar } from "./Components";
 import { Room } from "./Room";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <main
-    className="w-full flex items-center justify-center h-screen bg-slate-700 text-white"
+    className="w-full flex flex-col text-white"
     >
-     <Room>
-          <CodeEditor/>
-      </Room>
+      <Navbar/>
+      {/* <Link href="/CodeEditor"
+      className="bg-green-500"
+      >Code editor</Link> */}
     </main>
   );
 }
