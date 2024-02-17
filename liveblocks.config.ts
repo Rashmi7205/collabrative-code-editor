@@ -20,7 +20,11 @@ type Presence = {
 // automatically persisted and synced to all connected clients.
 type Storage = {
   code: LiveObject<{
-   value:string;
+   content:string;
+   language:string;
+   name:string;
+   stdin:string|null;
+   output:string | null;
   }>;
 };
 // Optionally, UserMeta represents static/readonly metadata on each user, as

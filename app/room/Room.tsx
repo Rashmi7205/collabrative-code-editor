@@ -15,7 +15,13 @@ export function Room({ children }: { children: ReactNode}) {
     <RoomProvider id={id}
     initialPresence={{cursor:null}}
     initialStorage={{
-      code: new LiveObject({value:"//write something"}),
+      code: new LiveObject({
+        content:null,
+        language:"javascript",
+        name:"script.js",
+        stdin:null,
+        output:null
+      }),
     }}
     >
       <ClientSideSuspense fallback={<div>Loading…</div>}>
