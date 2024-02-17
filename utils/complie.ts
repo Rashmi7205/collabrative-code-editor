@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 interface Code{
     language:string;
     stdin:string|null;
@@ -7,14 +8,14 @@ interface Code{
 }
 
 export const compileCode = async ({ language, stdin, name, content }) => {
-  try {
+    try {
     const options = {
       method: 'POST',
-      url: 'https://onecompiler-apis.p.rapidapi.com/api/v1/run',
+      url: process.env.NEXT_PUBLIC_RAPID_API_URL!,
       headers: {
         'content-type': 'application/json',
-        'X-RapidAPI-Key': "5924c0ed3amshf8cbf64ea98c7f6p193133jsne2c1829adf3e",
-        'X-RapidAPI-Host': "onecompiler-apis.p.rapidapi.com",
+        'X-RapidAPI-Key': process.env.NEXT_PUBLIC_RAPID_API_KEY!,
+        'X-RapidAPI-Host': process.env.NEXT_PUBLIC_RAPID_API_HOST!,
       },
       data: {
         language: language,

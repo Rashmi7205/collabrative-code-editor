@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { CodeEditor, Compiler, SideMenu } from "../Components";
 import { languages, programmingLanguages } from "@/Constants";
-import { useMutation } from "@/liveblocks.config";
+import { useMutation, useStorage } from "@/liveblocks.config";
 
 const CodeEditorLayout = () => {
   const [language, setLang] = useState({
@@ -23,7 +23,7 @@ const CodeEditorLayout = () => {
     name: "script.js",
     stdin: null,
   });
-
+  const codeLang = useStorage((storage)=>storage.code.language);
   const handleChangeInlanguage= useMutation(({storage})=>{
         const code = storage.get("code");
         code.set("content",language.defaultCode);
@@ -53,7 +53,7 @@ const CodeEditorLayout = () => {
         <h1 className="text-2xl">Codex</h1>
         <Select onValueChange={handleValueChange}>
           <SelectTrigger className="w-[150px] bg-transparent ">
-            <SelectValue placeholder="Javascript" />
+            <SelectValue placeholder={codeLang} />
           </SelectTrigger>
           <SelectContent>
             {languages.map((lang) => (
