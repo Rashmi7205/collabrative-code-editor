@@ -1,14 +1,14 @@
 "use client";
 
 import { ReactNode } from "react";
-import { RoomProvider } from "../../liveblocks.config";
+import { RoomProvider, client } from "../../liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { LiveObject } from "@liveblocks/client";
 import { useParams } from "next/navigation";
 
 
 export function Room({ children }: { children: ReactNode}) {
-
+  
   const {id} = useParams();
 
   return (
