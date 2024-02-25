@@ -70,3 +70,5 @@ export class AppwriteService {
 
     
 }
+
+export default new AppwriteService();
