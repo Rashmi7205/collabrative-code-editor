@@ -1,6 +1,8 @@
 import { Navbar } from "../Components"
 
-const HomeLayout = () => {
+const HomeLayout = () => 
+
+  {
   return (
     <div className="w-full h-min flex flex-col items-center ">
         <Navbar/>

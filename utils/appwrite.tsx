@@ -70,5 +70,5 @@ export class AppwriteService {
 
     
 }
-
-export default new AppwriteService();
+const Appwrite =  new AppwriteService();
+export default Appwrite;

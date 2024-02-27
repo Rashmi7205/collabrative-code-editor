@@ -1,13 +1,10 @@
-import client from "@/app/appwrite";
 import {Databases, ID} from 'appwrite';
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(req:NextRequest, res:NextResponse) {
+export async function POST(req:Request, res:Response) {
     try {
-            const payload = req.body;
+            const payload = await req.body;
             return  Response.json({
                 payload
-            })
+            });
     } catch (error :any) {
             return new Response("Internal Error", { status: 500 });
     }
