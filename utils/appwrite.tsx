@@ -1,5 +1,5 @@
 import { client } from "@/app/appwrite";
-import { Account, ID } from "appwrite";
+import { Account, Databases, ID } from "appwrite";
 
 type CreateUserAccount = {
     email: string,
@@ -14,22 +14,36 @@ type LoginUserAccount = {
 
 
 export const account = new Account(client);
+const databases = new Databases(client);
 
 
 export class AppwriteService {
     async createUserAccount({email, password, name}: CreateUserAccount) {
         try {
-            const userAccount = await account.create(ID.unique(), email, password, name)
+            const newUser = await databases.createDocument(
+                process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+                process.env.NEXT_PUBLIC_USER_COLL_ID,
+                ID.unique(),
+                {
+                   name,
+                   email,
+                }   
+            );
+
+            const userAccount = await account.create(ID.unique(), email, password, name);
             if (userAccount) {
-                return this.login({email, password})
+               
+                 return newUser?this.login({email, password}):null;
             } else {
-                return userAccount
+                return userAccount;
             }    
         } catch (error:any) {
-            throw error
+            throw error;
         }
+    }
 
-    
+    async signInWithGoogle(){
+        account.createOAuth2Session("google","localhost:3000/dashboard","localhost:3000");
     }
 
     async login( { email, password }: LoginUserAccount) {

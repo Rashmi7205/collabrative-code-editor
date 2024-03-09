@@ -1,55 +1,91 @@
 "use client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import Appwrite from "@/utils/appwrite";
+import { Code2, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 const Navbar = () => {
   const [userData, setUserData] = useState(null);
 
   // get the current user data if the user is logged in
+
   const getCurrUser = async () => {
     try {
-        // check if the user logged in or not
-        const isLoggedIn = await Appwrite.isLoggedIn();
-        if(isLoggedIn){
-          const user = await Appwrite.getCurrentUser();
-          if(user){
-            setUserData(user);
-          }
-        }
-        else{
-          return;
-        }
-    } catch (error) { 
-        console.log(error);
+      const user = await Appwrite.getCurrentUser();
+      setUserData(user);
+    } catch (error) {
+      console.log(error);
     }
   };
+
   useEffect(() => {
     getCurrUser();
-  },[]);
+  }, []);
 
   return (
     <nav className="w-full bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex  items-center justify-between mx-auto p-2">
-        <a
-          href="https://flowbite.com/"
-          className="flex items-center space-x-3 rtl:space-x-reverse"
-        >
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
-            className="h-8"
-            alt="Flowbite Logo"
-          />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Flowbite
-          </span>
-        </a>
+        <Link className="text-white bg-black flex text-wrap" href="/">
+          <p>CodeX</p>
+          <Code2 />
+        </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <Link
-            href="/signin"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-           {userData? userData?.name :"Get started"}
-          </Link>
+          {userData ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-orange-500 font-semibold border-2 border-orange-500 px-5 py-2 rounded-lg">
+                {userData?.name}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Dialog>
+                    <DialogTrigger>Edit</DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your account and remove your data from our
+                          servers.
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={async ()=>await Appwrite.logout()} className="bg-red-500 text-white hover:bg-red-800 ">
+                  <LogOut />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Get Started
+            </Link>
+          )}
+
           <button
             data-collapse-toggle="navbar-cta"
             type="button"

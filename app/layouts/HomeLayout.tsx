@@ -4,7 +4,7 @@ const HomeLayout = () =>
 
   {
   return (
-    <div className="w-full h-min flex flex-col items-center ">
+    <div className="w-full flex flex-col items-center ">
         <Navbar/>
     </div>
   )
