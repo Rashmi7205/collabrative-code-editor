@@ -43,7 +43,19 @@ export class AppwriteService {
     }
 
     async signInWithGoogle(){
-        account.createOAuth2Session("google","localhost:3000/dashboard","localhost:3000");
+        account.createOAuth2Session(
+            "google",
+            "http://localhost:3000/",
+            "http://localhost:3000/login"
+          );
+    }
+
+    async signInWithGithub (){
+        account.createOAuth2Session(
+            "github",
+            "http://localhost:3000/",
+            "http://localhost:3000/login"
+          );
     }
 
     async login( { email, password }: LoginUserAccount) {
@@ -65,7 +77,7 @@ export class AppwriteService {
 
     async getCurrentUser() {
         try {
-            return account.get()
+            return account.get();
         } catch (error) {
             console.log("getcurrentUser error: " + error)
             

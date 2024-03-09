@@ -21,6 +21,7 @@ import Appwrite from "@/utils/appwrite";
 import { Code2, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 const Navbar = () => {
   const [userData, setUserData] = useState(null);
 
@@ -37,14 +38,18 @@ const Navbar = () => {
 
   useEffect(() => {
     getCurrUser();
-  }, []);
+  }, [userData]);
 
   return (
-    <nav className="w-full bg-white border-gray-200 dark:bg-gray-900">
+    <nav className="w-full bg-transparent border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex  items-center justify-between mx-auto p-2">
-        <Link className="text-white bg-black flex text-wrap" href="/">
-          <p>CodeX</p>
-          <Code2 />
+        <Link href="/">
+          <Image 
+          src="/images/logo.png"
+          alt="bytecode"
+          width={160}
+          height={70}
+          />
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {userData ? (
@@ -71,7 +76,10 @@ const Navbar = () => {
                     </DialogContent>
                   </Dialog>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={async ()=>await Appwrite.logout()} className="bg-red-500 text-white hover:bg-red-800 ">
+                <DropdownMenuItem onClick={async ()=>{
+                  await Appwrite.logout();
+                  setUserData(null);
+                  }} className="bg-red-500 text-white hover:bg-red-800 ">
                   <LogOut />
                   Logout
                 </DropdownMenuItem>
@@ -80,7 +88,7 @@ const Navbar = () => {
           ) : (
             <Link
               href="/sign-in"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
             >
               Get Started
             </Link>
@@ -119,7 +127,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="#"
-                className="block py-2 px-3 md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                className="block py-2 px-3 md:p-0 text-white bg-orange-700 rounded md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
                 aria-current="page"
               >
                 Home
