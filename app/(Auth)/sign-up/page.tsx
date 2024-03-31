@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const Signup = () => {
 

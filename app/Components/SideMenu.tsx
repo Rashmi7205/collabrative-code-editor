@@ -1,6 +1,51 @@
-import React from 'react'
+import { client } from "@/liveblocks.config";
+import { Room } from "../room/Room";
+
 
 const SideMenu = () => {
+  const room = client.getRoom("2");
+  const leaveRoom = async  () => {
+  //  To leave the room 
+
+    await client.leave();
+    room?.broadcastEvent({ type: "leave", userId: room?.getSelf()?.connectionId });
+    window.location.href = '/';
+
+  }
+
+  const getTeamList = async ()=>{
+  
+    const others = room?.getOthers();
+    if(others){ 
+      console.log(others);
+    } 
+  }
+
+  const unsubscribe = room?.subscribe("others", (others, event) => {
+  
+    if (event.type === "leave") {
+      // A user has left the room
+      console.log(event);
+      console.log(`User ${event.user.connectionId}  has left`);
+    }
+  
+    if (event.type === "enter") {
+      // A user has entered the room
+      console.log("user entered")
+    }
+  
+    if (event.type === "update") {
+      // A user has updated
+      // event.user;
+      // event.updates;
+    }
+  
+    if (event.type === "reset") {
+      // A disconnection has occurred and others has reset
+    }
+  });
+
+
   return (
     <div className="flex h-screen w-16 flex-col justify-between border-e bg-slate-800 text-white">
   <div>
@@ -47,31 +92,9 @@ const SideMenu = () => {
 
         <ul className="space-y-1 border-t border-gray-100 pt-4">
           <li>
-            <a
-              href="#"
-              className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="size-5 opacity-75"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-
-              <span
-                className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible"
-              >
-                Teams
-              </span>
-            </a>
+            <button onClick={getTeamList}>
+              team
+            </button>
           </li>
 
           <li>
@@ -162,34 +185,12 @@ const SideMenu = () => {
     </div>
   </div>
 
-  <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2">
-    <form action="#">
-      <button
-        type="submit"
-        className="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="size-5 opacity-75"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-          />
-        </svg>
-
-        <span
-          className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible"
-        >
-          Logout
-        </span>
-      </button>
-    </form>
+  <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2 text-black">
+    <button
+    onClick={leaveRoom}
+    >
+      logout
+    </button>
   </div>
 </div>
   )
