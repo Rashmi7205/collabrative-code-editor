@@ -42,22 +42,6 @@ export class AppwriteService {
         }
     }
 
-    async signInWithGoogle(){
-        account.createOAuth2Session(
-            "google",
-            "http://localhost:3000/",
-            "http://localhost:3000/login"
-          );
-    }
-
-    async signInWithGithub (){
-        account.createOAuth2Session(
-            "github",
-            "http://localhost:3000/",
-            "http://localhost:3000/login"
-          );
-    }
-
     async login( { email, password }: LoginUserAccount) {
        try {
             return await account.createEmailSession(email, password)

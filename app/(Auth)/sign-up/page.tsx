@@ -1,12 +1,12 @@
 "use client";
+import { account } from "@/app/appwrite";
 import Loader from "@/app/Components/Loader";
 import Appwrite from "@/utils/appwrite";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { GoogleAuthProvider } from "firebase/auth";
 
 const Signup = () => {
 
@@ -17,7 +17,13 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
   const[isLoading,setIsLoading] = useState(false);
+
+  const signInWithGoogle = useCallback(async ()=>{
+      const userData = await account.createOAuth2Session("google","http://localhost:3000/");
+      console.log(userData);
+  },[]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,7 +126,7 @@ const Signup = () => {
                 {/* google signin button */}
                 <button
                   type="button"
-                  onClick={()=>Appwrite.signInWithGoogle()}
+                  onClick={signInWithGoogle}
                   className="flex items-center justify-center py-2 px-20 bg-white hover:bg-gray-200 focus:ring-orange-500 focus:ring-offset-orange-200 text-gray-700 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                 >
                   <svg

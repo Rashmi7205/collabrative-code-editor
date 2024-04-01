@@ -1,51 +1,7 @@
 import { client } from "@/liveblocks.config";
-import { Room } from "../room/Room";
 
 
 const SideMenu = () => {
-  const room = client.getRoom("2");
-  const leaveRoom = async  () => {
-  //  To leave the room 
-
-    await client.leave();
-    room?.broadcastEvent({ type: "leave", userId: room?.getSelf()?.connectionId });
-    window.location.href = '/';
-
-  }
-
-  const getTeamList = async ()=>{
-  
-    const others = room?.getOthers();
-    if(others){ 
-      console.log(others);
-    } 
-  }
-
-  const unsubscribe = room?.subscribe("others", (others, event) => {
-  
-    if (event.type === "leave") {
-      // A user has left the room
-      console.log(event);
-      console.log(`User ${event.user.connectionId}  has left`);
-    }
-  
-    if (event.type === "enter") {
-      // A user has entered the room
-      console.log("user entered")
-    }
-  
-    if (event.type === "update") {
-      // A user has updated
-      // event.user;
-      // event.updates;
-    }
-  
-    if (event.type === "reset") {
-      // A disconnection has occurred and others has reset
-    }
-  });
-
-
   return (
     <div className="flex h-screen w-16 flex-col justify-between border-e bg-slate-800 text-white">
   <div>
@@ -92,7 +48,7 @@ const SideMenu = () => {
 
         <ul className="space-y-1 border-t border-gray-100 pt-4">
           <li>
-            <button onClick={getTeamList}>
+            <button >
               team
             </button>
           </li>
@@ -187,7 +143,7 @@ const SideMenu = () => {
 
   <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2 text-black">
     <button
-    onClick={leaveRoom}
+
     >
       logout
     </button>

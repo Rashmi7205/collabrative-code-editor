@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { CodeEditor, Compiler, SideMenu } from "../Components";
 import { languages, programmingLanguages } from "@/Constants";
 import { useMutation, useStorage } from "@/liveblocks.config";
+import { saveFile } from "@/utils/saveFile";
 
 const CodeEditorLayout = () => {
   const [language, setLang] = useState({
@@ -23,29 +24,48 @@ const CodeEditorLayout = () => {
     name: "script.js",
     stdin: null,
   });
-  const codeLang = useStorage((storage)=>storage.code.language);
-  const handleChangeInlanguage= useMutation(({storage})=>{
-        const code = storage.get("code");
-        code.set("content",language.defaultCode);
-        code.set("language",language.displayName);
-        code.set("name",language.name);
-        code.set("stdin",language.stdin);
-      },[language]);
+  const codeFile = useStorage((storage) => storage.code);
+  const handleChangeInlanguage = useMutation(
+    ({ storage }) => {
+      const code = storage.get("code");
+      code.set("content", language.defaultCode);
+      code.set("language", language.displayName);
+      code.set("name", language.name);
+      code.set("stdin", language.stdin);
+    },
+    [language]
+  );
 
   const handleValueChange = (selectedValue) => {
     const selectedLang = programmingLanguages[selectedValue];
     setLang({
       displayName: selectedLang.displayName,
-      defaultCode:selectedLang.defaultCode,
+      defaultCode: selectedLang.defaultCode,
       name: selectedLang.defaultFileName,
       stdin: null,
     });
     handleChangeInlanguage();
   };
 
+  const saveCode = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/code/savecode", {
+        method: "POST",
+        body: JSON.stringify({
+          content: codeFile.content,
+          fileName:codeFile.name,
+        }),
+      });
+      const {data}= await response.json();
+      console.log(data)
+    } catch (error :any) {
+      console.log("Error", error.message);
+    }
+  };
+
   useEffect(() => {
     handleChangeInlanguage();
-  },[language]);
+  }, [language]);
 
   return (
     <div className="w-full h-full bg-black text-white overflow-hidden">
@@ -53,7 +73,7 @@ const CodeEditorLayout = () => {
         <h1 className="text-2xl">Codex</h1>
         <Select onValueChange={handleValueChange}>
           <SelectTrigger className="w-[150px] bg-transparent ">
-            <SelectValue placeholder={codeLang} />
+            <SelectValue placeholder={codeFile.language} />
           </SelectTrigger>
           <SelectContent>
             {languages.map((lang) => (
@@ -67,6 +87,7 @@ const CodeEditorLayout = () => {
             ))}
           </SelectContent>
         </Select>
+        <button onClick={saveCode}>Save Code</button>
       </div>
       <div className="w-full h-[90%] flex">
         {/* Side bar menu */}
@@ -76,14 +97,12 @@ const CodeEditorLayout = () => {
         <div className="w-[100%] h-full">
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel className=" px-2 py-1 flex item-center justify-center">
-              <CodeEditor
-                lang={language.displayName} 
-              />
+              <CodeEditor lang={language.displayName} />
             </ResizablePanel>
             <ResizableHandle />
             {/* Compiler section start */}
             <ResizablePanel>
-              <Compiler/>
+              <Compiler />
             </ResizablePanel>
             {/* Compiler section end */}
           </ResizablePanelGroup>

@@ -38,7 +38,7 @@ const Navbar = () => {
 
   useEffect(() => {
     getCurrUser();
-  }, [userData]);
+  },[]);
 
   return (
     <nav className="w-full bg-transparent border-gray-200 dark:bg-gray-900">
