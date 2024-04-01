@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 const Navbar = () => {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<null|any>(null);
 
   // get the current user data if the user is logged in
 
@@ -31,6 +31,7 @@ const Navbar = () => {
     try {
       const user = await Appwrite.getCurrentUser();
       setUserData(user);
+     
     } catch (error) {
       console.log(error);
     }
@@ -38,17 +39,17 @@ const Navbar = () => {
 
   useEffect(() => {
     getCurrUser();
-  },[]);
+  }, []);
 
   return (
     <nav className="w-full bg-transparent border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex  items-center justify-between mx-auto p-2">
         <Link href="/">
-          <Image 
-          src="/images/logo.png"
-          alt="bytecode"
-          width={160}
-          height={70}
+          <Image
+            src="/images/logo.png"
+            alt="bytecode"
+            width={160}
+            height={70}
           />
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
@@ -76,10 +77,13 @@ const Navbar = () => {
                     </DialogContent>
                   </Dialog>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={async ()=>{
-                  await Appwrite.logout();
-                  setUserData(null);
-                  }} className="bg-red-500 text-white hover:bg-red-800 ">
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await Appwrite.logout();
+                    setUserData(null);
+                  }}
+                  className="bg-red-500 text-white hover:bg-red-800 "
+                >
                   <LogOut />
                   Logout
                 </DropdownMenuItem>

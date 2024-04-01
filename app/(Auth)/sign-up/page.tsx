@@ -9,7 +9,6 @@ import { useCallback, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
-
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -18,12 +17,16 @@ const Signup = () => {
     password: "",
   });
 
-  const[isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const signInWithGoogle = useCallback(async ()=>{
-      const userData = await account.createOAuth2Session("google","http://localhost:3000/");
-      console.log(userData);
-  },[]);
+
+
+  const signInWithGoogle = useCallback(async () => {
+    await account.createOAuth2Session("google", "http://localhost:3000/sign-up");
+    const session = await account.getSession("current");
+
+    
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,27 +43,26 @@ const Signup = () => {
     // Create a new user
     try {
       const userAccount = await Appwrite.createUserAccount(formData);
-      if(userAccount){
-          toast.success('Your account has been created!');
-          router.push("/");
-      }else{
+      if (userAccount) {
+        toast.success("Your account has been created!");
+        router.push("/");
+      } else {
         toast.error("Failed To create  an Account!");
       }
-    }catch(err:any){
-      toast.error(err.message); 
-      return ;
-    }
-    finally{
+    } catch (err: any) {
+      toast.error(err.message);
+      return;
+    } finally {
       setIsLoading(false);
     }
-   
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-opacity-50 backdrop-filter backdrop-blur-lg bg-gradient-to-tr from-slate-800 to-slate-700">
-      <form 
-      onSubmit={handleSubmit}
-      className="relative py-3 sm:max-w-xl sm:mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="relative py-3 sm:max-w-xl sm:mx-auto"
+      >
         <div className="relative px-4 py-10 bg-black mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
           <div className="max-w-md mx-auto text-white">
             <div className="flex items-center space-x-5 justify-center">
@@ -227,7 +229,11 @@ const Signup = () => {
                 className="py-2 px-4 bg-orange-600 hover:bg-orange-700 focus:ring-orange-500 focus:ring-offset-orange-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                 type="submit"
               >
-                {isLoading ? <Loader  text={"Wait Creating account ..."} color="white"/>  : "Sign in"}
+                {isLoading ? (
+                  <Loader text={"Wait Creating account ..."} color="white" />
+                ) : (
+                  "Sign in"
+                )}
               </button>
             </div>
             <div className="flex items-center justify-between mt-4">
@@ -243,7 +249,7 @@ const Signup = () => {
           </div>
         </div>
       </form>
-      <Toaster/>
+      <Toaster />
     </div>
   );
 };
