@@ -8,11 +8,17 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+interface FormData{
+  email: string;
+  password: string;
+  username:string;
+}
+
 const Signup = () => {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    name: "",
+  const [formData, setFormData] = useState<FormData>({
+    username: "",
     email: "",
     password: "",
   });
@@ -22,32 +28,36 @@ const Signup = () => {
 
 
   const signInWithGoogle = useCallback(async () => {
-    await account.createOAuth2Session("google", "http://localhost:3000/sign-up");
+    await account.createOAuth2Session("google", `${process.env.NEXT_PUBLIC_FRONT_END_URL}/sign-up`);
     const session = await account.getSession("current");
 
     
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     setIsLoading(true);
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.username || !formData.email || !formData.password) {
       toast.error("Please fill all fields");
       return;
     }
     // Create a new user
     try {
-      const userAccount = await Appwrite.createUserAccount(formData);
-      if (userAccount) {
-        toast.success("Your account has been created!");
-        router.push("/");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_FRONT_END_URL}/api/auth/signup`,{
+        method:"POST",
+        body:JSON.stringify(formData)
+      });
+      const userAccount = await response.json();
+      if (userAccount?.success) {
+          toast.success(userAccount.message);
+          router.push('/');
       } else {
-        toast.error("Failed To create  an Account!");
+        toast.error(userAccount?.message);
       }
     } catch (err: any) {
       toast.error(err.message);
@@ -84,7 +94,7 @@ const Signup = () => {
               <input
                 className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full bg-gray-700 text-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500"
                 type="text"
-                name="name"
+                name="username"
                 onChange={handleChange}
                 id="username"
               />

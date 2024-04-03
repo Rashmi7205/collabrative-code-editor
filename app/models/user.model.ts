@@ -57,13 +57,14 @@ const userSchema = new mongoose.Schema({
     verifyToken: String,
     verifyTokenExpiry: Date,
 });
+
 userSchema.methods = {
     generateJWTtoken: async function(){
         return await jwt.sign({
             id:this._id,
             email:this.email
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET!,
         {
             expiresIn:process.env.JWT_EXPIRY
         })
