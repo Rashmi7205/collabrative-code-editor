@@ -21,12 +21,16 @@ const createRoom = async (req:NextRequest)=>{
                     message:"Cannot find the user",
                 },{status:402});              
             }
-            console.log(user);
+
             //create room
             const room = await Room.create({
                 host:user._id,
                 status:'Active',
             });
+
+            user.roomList.push(room._id);
+            await user.save();
+
             return NextResponse.json({
                 success:true,
                 message:"Room created sucessfully!",
@@ -41,16 +45,98 @@ const createRoom = async (req:NextRequest)=>{
             },{status:404}); 
         }
 }
-const getRoomDetails = async (req:NextResponse)=>{
+const getRoomDetails = async (req:NextRequest)=>{
     try {
-        
+    
+        const roomId = req.nextUrl.searchParams.get('roomid');
+        if(!roomId){
+            return NextResponse.json({
+                success:false,
+                message:"Missing paramter | roomid"
+            },{status:403});
+        }
+        const id = await getDataFromToken(req);
+        if(!id){
+            return NextResponse.json({
+                success:false,
+                message:"Cannot  access this resource"
+            },{status:402});
+        }
+        const user = await User.findById(id);
+        if(!user){
+            return NextResponse.json({
+                success:false,
+                message:"Unauthenticated user",
+            },{status:402});
+        }
+        const room = await Room.findById(roomId);
+        if(!room){
+            return NextResponse.json({
+                success:false,
+                message:"Cannot find the room"
+            },{status:402});
+        }
+       
     } catch (error:any) {
-        
+        return  NextResponse.json({
+            success:false,
+            message:"Internal Server Error"
+        },{status:500});
+    }
+}
+//delete the room
+const deleteRoom = async (req:NextRequest)=>{
+    try {
+        const roomId = req.nextUrl.searchParams.get('roomid');
+        if(!roomId){
+            return NextResponse.json({
+                success:false,
+                message:"Missing paramter | roomid"
+            },{status:403});
+        }
+        const id = await getDataFromToken(req);
+        if(!id){
+            return NextResponse.json({
+                success:false,
+                message:"Cannot  access this resource"
+            },{status:402});
+        } 
+        const room = await Room.findById(roomId);
+        if(!room){
+            return NextResponse.json({
+                success:false,
+                message:"This room does not exist"
+            },{status:402});
+        }
+        if(roomId!==String(room.host)){
+            return NextResponse.json({
+                success:false,
+                message:"Invalid access | You are not the Host"
+            },{status:404});
+        }
+        const isRoomDeleted = await Room.findByIdAndDelete(roomId);
+        if(!isRoomDeleted){
+            return NextResponse.json({
+                success:true,
+                message:"Unable to delete the room"
+            },{status:404});
+        }
+        return NextResponse.json({
+            success:true,
+            message:"Room deleted successfully"
+        },{status:200});
+
+    } catch (error) {
+        return  NextResponse.json({
+            success:false,
+            message:"Internal Server Error"
+        },{status:500});
     }
 }
 
 export {
     getRoomDetails as GET,
-    createRoom as POST
+    createRoom as POST,
+    deleteRoom as DELETE
 }
 
