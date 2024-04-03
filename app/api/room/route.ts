@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDataFromToken } from "../helpers/getUserInfo"
 import User from "@/app/models/user.model";
 import Room from "@/app/models/room.model";
+import { connect } from "@/config/dbConnection";
 
-
+connect();
 const createRoom = async (req:NextRequest)=>{
         try {
             const id = await getDataFromToken(req);
@@ -20,6 +21,7 @@ const createRoom = async (req:NextRequest)=>{
                     message:"Cannot find the user",
                 },{status:402});              
             }
+            console.log(user);
             //create room
             const room = await Room.create({
                 host:user._id,
