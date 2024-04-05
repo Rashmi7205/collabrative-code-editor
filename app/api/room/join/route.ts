@@ -94,7 +94,17 @@ const leaveRoom = async (req:NextRequest)=>{
                 message:"Cannot find the room"
             },{status:402});
         }
-        
+        if(String(room.host)===id){
+            return NextResponse.json({
+                success:false,
+                message:"Host cannot leave the room"
+            },{status:404});
+        }       
+
+        room.participants.pop(id);
+        user.isConnected=false;
+        await room.save();
+        await user.save();
 
     } catch (error) {
         return  NextResponse.json({
