@@ -48,7 +48,6 @@ async function registerUser(req: NextRequest) {
         userData.provider,
         userData.prodiverAccessToken
       );
-      
       return NextResponse.json({ userInfo }, { status: 200 });
     }
     //sign up through the email and password

@@ -1,11 +1,13 @@
 "use client";
+import { account } from "@/app/appwrite";
 import Loader from "@/app/Components/Loader";
 import Appwrite from "@/utils/appwrite";
-import { Github, GithubIcon } from "lucide-react";
+import axios from "axios";
+import { Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Page() {
@@ -24,6 +26,13 @@ export default function Page() {
     });
   };
 
+  
+  const signInWithGoogle = useCallback(async () => {
+    setIsLoadding(true);
+    await account.createOAuth2Session("google", `${process.env.NEXT_PUBLIC_FRONT_END_URL}/onboard`);
+    const session = await account.getSession("current");
+
+  }, []);
   const handleFormSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -37,10 +46,10 @@ export default function Page() {
         return;
       }
       // getting the respose from the appwrite
-      const userDetails = await Appwrite.login(userData);
-      if (userDetails) {
+      const {data} = await axios.post('/api/auth/signin',userData);
+      if (data) {
         toast.success("Logged in  to your acccount successfully!");
-        router.push("/");
+        router.push("/onboard");
       } else {
         toast.error("Invalid Credentials!");
         return;
@@ -111,7 +120,7 @@ export default function Page() {
                 <button
                   type="button"
                   onClick={() => {
-                    Appwrite.signInWithGoogle();
+                   signInWithGoogle();
                   }}
                   className="flex items-center justify-center py-2 px-20 bg-white hover:bg-gray-200 focus:ring-orange-500 focus:ring-offset-orange-200 text-gray-700 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                 >

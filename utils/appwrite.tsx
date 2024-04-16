@@ -21,8 +21,8 @@ export class AppwriteService {
     async createUserAccount({email, password, name}: CreateUserAccount) {
         try {
             const newUser = await databases.createDocument(
-                process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
-                process.env.NEXT_PUBLIC_USER_COLL_ID,
+                process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+                process.env.NEXT_PUBLIC_USER_COLL_ID!,
                 ID.unique(),
                 {
                    name,

@@ -41,7 +41,7 @@ const joinRoom = async (req:NextRequest)=>{
             },{status:403});
         }
         const setRoomList = user.roomList.push(roomId);
-        user.isConnected=roomId;
+        user.isConnected=true;
         if(!setRoomList){
             return NextResponse.json({
                 success:false,

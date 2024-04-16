@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getDataFromToken } from "../helpers/getUserInfo"
+import { NextRequest, NextResponse } from "next/server";
+import { getDataFromToken } from "../helpers/getUserInfo";
 import User from "@/app/models/user.model";
 import Room from "@/app/models/room.model";
 import { connect } from "@/config/dbConnection";
@@ -76,7 +76,11 @@ const getRoomDetails = async (req:NextRequest)=>{
                 message:"Cannot find the room"
             },{status:402});
         }
-       
+       return NextResponse.json({
+           success:true,
+           message:"Room details Fetched successfully",
+           room,
+       },{status:200});
     } catch (error:any) {
         return  NextResponse.json({
             success:false,

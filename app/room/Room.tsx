@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 export function Room({ children }: { children: ReactNode}) {
   
   const {id} = useParams();
-
+  console.log(typeof id);
   return (
     <RoomProvider id={id}
     initialPresence={{cursor:null}}

@@ -1,6 +1,14 @@
 import { GlassCards, Navbar } from "../Components";
 
 const HomeLayout = () => {
+  const getUserProfile = async ()=>{
+        try {
+            
+        } catch (error:any) {
+          
+        }
+  }
+
   return (
     <div className="w-full flex flex-col items-center ">
       <Navbar />
